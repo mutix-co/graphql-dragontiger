@@ -40,6 +40,9 @@ const styleguide = styleguidist({
     name: 'hooks',
     sectionDepth: 1,
     sections: [{
+      name: 'useDefaults',
+      content: `${root}/hooks/useDefaults/useDefaults.md`,
+    }, {
       name: 'useGraphQLProvider',
       content: `${root}/hooks/useGraphQLProvider/useGraphQLProvider.md`,
     }, {

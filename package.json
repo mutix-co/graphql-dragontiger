@@ -4,13 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev:server": "node ./dev",
     "cy:run": "cypress run",
     "cy:open": "cypress open",
-    "test": "yarn test-eslint; yarn test-jest; yarn test-cafe",
+    "dev:server": "node ./dev",
     "test:eslint": "eslint ./src",
     "test:jest": "jest --coverage --detectOpenHandles --forceExit",
-    "test:e2e": "start-server-and-test dev:server http://localhost:6060 cy:run"
+    "test:chrome": "start-server-and-test dev:server http://localhost:6060 cy:run"
   },
   "author": "mutix",
   "license": "MIT",
