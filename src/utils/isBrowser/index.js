@@ -1,1 +1,1 @@
-export { default } from './isBrowser';
+module.exports = require('./isBrowser');

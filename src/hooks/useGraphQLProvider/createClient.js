@@ -7,14 +7,16 @@ import createAuthenticator from './createAuthenticator';
 import createCache from './createCache';
 import createExecute from './createExecute';
 import createFetch from './createFetch';
+import createServerKey from './createServerKey';
 import createGraphQL from './createGraphQL';
 import createListeners from './createListeners';
-import createToken from './createToken';
 import createWebSocket from './createWebSocket';
 
 export default function createClient(options) {
   const configs = defaults({}, options, {
     graphql: '/graphql',
+    authorization: '/authorization',
+    certificate: '/certificate',
     errorHander: identity,
   });
 
@@ -23,7 +25,6 @@ export default function createClient(options) {
   service.session = configs.session || defaultSession;
   service.storage = configs.storage || defaultStorage;
   service.cache = configs.cache || createCache({ configs, ...service });
-  service.token = configs.token || createToken({ configs, ...service });
 
   // set() {
   //   window.addEventListener('blur', pause);
@@ -32,6 +33,7 @@ export default function createClient(options) {
 
   service.listeners = createListeners({ configs, ...service });
   service.fetch = createFetch({ configs, ...service });
+  service.serverKey = createServerKey({ configs, ...service });
   service.authenticator = createAuthenticator({ configs, ...service });
   service.execute = createExecute({ configs, ...service });
   service.webSocket = createWebSocket({ configs, ...service });
@@ -39,8 +41,8 @@ export default function createClient(options) {
 
   return {
     resetStore() {
-      service.session.clear();
       service.storage.clear();
+      service.cache.clear();
     },
     print,
     ...service,

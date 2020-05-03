@@ -1,31 +1,72 @@
-const { JSONWebSecretBox, TextArray } = require('jw25519');
+const { JSONWebSecretBox, Base: { base58 }, Text } = require('jw25519');
 
-function SecretServer(key) {
-  this.cryptor = new JSONWebSecretBox(key);
+function SecretServer(generator = () => ({})) {
+  this.keys = new Map();
+  this.generator = generator;
   return this;
 }
 
 SecretServer.prototype = {
-  express() {
-    return (req, res, next) => {
-      const { body } = req;
-      const { send } = res;
+  async getKey(id) {
+    const keyId = id || 'LATEST_VERSION';
 
-      if (body.ciphertext === undefined) {
-        next();
-        return;
-      }
+    if (this.keys.has(keyId)) {
+      const key = this.keys.get(keyId);
+      if (key.expireAt > Date.now()) return key;
+    }
 
+    const tmp = await this.generator(keyId);
+    const key = {
+      keyId: tmp.keyId || 'LATEST_VERSION',
+      cryptor: new JSONWebSecretBox(tmp.secretKey),
+      expireAt: tmp.expireAt || Date.now() + 48 * 60 * 60 * 1000,
+    };
+    this.keys.set(key.keyId, key);
+    return key;
+  },
+  certificate() {
+    return async (req, res) => {
       try {
-        req.body = this.cryptor.decrypt(body.ciphertext, body.key);
+        const { keyId, cryptor, expireAt } = await this.getKey();
+        res.send({
+          keyId,
+          serverKey: base58.encode(cryptor.keyPair.publicKey),
+          expireAt: new Date(expireAt).toISOString(),
+        });
+      } catch (error) {
+        res.sendStatus(500);
+      }
+    };
+  },
+  express() {
+    return async (req, res, next) => {
+      try {
+        const { body } = req;
 
+        if (body.ciphertext === undefined) {
+          next();
+          return;
+        }
+
+        const key = await this.getKey(body.keyId);
+        const clientKey = base58.decode(body.clientKey);
+
+        const tmp = key.cryptor.decrypt(body.ciphertext, clientKey);
+        req.body = JSON.parse(Text.convertUnicodeToString(tmp));
+
+        const originalSend = res.send;
         res.send = (data) => {
-          const jwsb = JSONWebSecretBox();
-          const ciphertext = jwsb.encrypt(
-            TextArray.convertStringToUTF16(JSON.stringify(data)),
-            body.key,
-          );
-          send({ ciphertext, key: jwsb.keyPair.publicKey });
+          const content = typeof data === 'object' ? JSON.stringify(data) : data;
+          if (typeof content === 'string') {
+            const jwsb = new JSONWebSecretBox();
+            const value = Text.convertStringToUnicode(content);
+            const ciphertext = jwsb.encrypt(value, clientKey);
+            res.set('Content-Type', 'application/json');
+            return originalSend.call(res, JSON.stringify({
+              ciphertext, serverKey: base58.encode(jwsb.keyPair.publicKey),
+            }));
+          }
+          return originalSend.call(res, data);
         };
 
         next();

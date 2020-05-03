@@ -1,27 +1,67 @@
+import assign from 'lodash/assign';
+
 function isNull(value) {
   return value === undefined || value === null;
 }
 
-export default function createCache({ session }) {
+const prefix = 'dragontiger-';
+
+export default function createCache(client) {
+  const { session } = client;
+
+  const cache = new Map();
+
+  const load = (name) => {
+    const id = `${prefix}${name}`;
+    if (cache.has(id) === true) return cache.get(id);
+
+    const result = session.getItem(id);
+    if (isNull(result) === false) {
+      cache.set(id, JSON.parse(result));
+      return cache.get(id);
+    }
+
+    return null;
+  };
+
   return {
     get(name) {
-      const result = session.getItem(`dragontiger-${name}`);
-      if (isNull(result) === true) return null;
-      const { value } = JSON.parse(result);
-      return value;
+      const data = load(name);
+      if (data !== null) return data.value;
+      return null;
     },
-    set(name, value) {
-      const timestamp = Date.now() + 5000;
-      session.setItem(`dragontiger-${name}`, JSON.stringify({ value, timestamp }));
+    set(name, value, expiredAt) {
+      const id = `${prefix}${name}`;
+      const timestamp = expiredAt || (Date.now() + 5000);
+      cache.set(id, { value, timestamp });
+      if (value instanceof Error) return this;
+      session.setItem(id, JSON.stringify({ value, timestamp }));
+      return this;
     },
     has(name) {
-      return isNull(session.getItem(`dragontiger-${name}`)) === false;
+      const id = `${prefix}${name}`;
+      return cache.has(id) === true || isNull(session.getItem(id)) === false;
+    },
+    delete(name) {
+      const id = `${prefix}${name}`;
+      cache.delete(id);
+      session.removeItem(id);
+      return this;
+    },
+    merge(name, value) {
+      const tmp = this.get(name) || {};
+      assign(tmp, value);
+      this.set(name, tmp);
+      return tmp;
     },
     expired(name) {
-      const result = session.getItem(`dragontiger-${name}`);
-      if (isNull(result) === true) return true;
-      const { timestamp } = JSON.parse(result);
-      return timestamp < Date.now();
+      const data = load(name);
+      if (data !== null) return data.timestamp < Date.now();
+      return true;
+    },
+    clear() {
+      session.clear();
+      cache.clear();
     },
   };
 }

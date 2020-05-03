@@ -1,1 +1,1 @@
-export { default } from './GraphQLError';
+module.exports = require('./GraphQLError');

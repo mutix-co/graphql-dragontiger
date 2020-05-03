@@ -1,1 +1,1 @@
-export { default } from './getFieldName';
+module.exports = require('./getFieldName');

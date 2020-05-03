@@ -15,7 +15,7 @@ context('useMutation', () => {
 
     cy.get('@mark').should('not.text', '0');
     cy.get('@mark').invoke('text').then(parseInt).should('gt', 2000);
-    cy.get('@mark').invoke('text').then(parseInt).should('lt', 2100);
+    cy.get('@mark').invoke('text').then(parseInt).should('lt', 2500);
 
     cy.get('@state').should('text', 'finish');
 
@@ -33,8 +33,8 @@ context('useMutation', () => {
     cy.get('@state').should('text', 'processing');
 
     cy.get('@mark').should('not.text', '0');
-    cy.get('@mark').invoke('text').then(parseInt).should('gt', 4000);
-    cy.get('@mark').invoke('text').then(parseInt).should('lt', 4100);
+    cy.get('@mark').invoke('text').then(parseInt).should('gt', 3000);
+    cy.get('@mark').invoke('text').then(parseInt).should('lt', 3500);
 
     cy.get('@state').should('text', 'finish');
 

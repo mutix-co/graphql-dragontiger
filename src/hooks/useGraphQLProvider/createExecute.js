@@ -1,50 +1,70 @@
+import map from 'lodash/map';
+import mapValues from 'lodash/mapValues';
+import isPlainObject from 'lodash/isPlainObject';
+import isArray from 'lodash/isArray';
 import GraphQLError from '../../utils/GraphQLError';
 
-export default function createExecute({
-  configs, fetch, token, authenticator,
-}) {
-  // cache.set(hash, response.data);
-  // listeners.emit(hash, response.data);
-  // listeners.emit(hash, error);
+export default function createExecute(client) {
+  const {
+    configs, fetch, cache, listeners, serverKey, authenticator,
+  } = client;
 
-  const link = {
-    hits: null,
-    renew() {
-      if (link.hits === null) {
-        link.hits = [];
-        setTimeout(
-          async () => {
-            const { hits } = link;
-            link.hits = null;
-            try {
-              await authenticator.renew();
-              hits.forEach(({ resolve }) => resolve());
-            } catch (error) {
-              hits.forEach(({ reject }) => reject(error));
-            }
-          },
-          10,
-        );
+  const findNode = (data) => {
+    if (isPlainObject(data)) {
+      const tmp = mapValues(data, findNode);
+      if (tmp.id) {
+        const result = cache.merge(`NODE:${tmp.id}`, tmp);
+        listeners.emit(`NODE:${tmp.id}`, result);
+        return result;
       }
-      return new Promise((resolve, reject) => {
-        link.hits.push({ resolve, reject });
-      });
-    },
+      return tmp;
+    }
+    if (isArray(data)) return map(data, findNode);
+    return data;
   };
 
   return async (params) => {
-    if (token.getAccess() === '' && token.getRefresh() !== '') await link.renew();
+    const { hash } = params;
 
-    const headers = {
-      'X-Correlation-Id': token.getCorrelationId(),
-      Authorization: token.getAccess(),
-      ...params.headers,
-    };
-    const response = await fetch({
-      method: 'POST', url: configs.graphql, ...params, headers,
-    });
-    const errors = response.data && response.data.errors;
-    if (errors) throw new GraphQLError(errors);
-    return response;
+    try {
+      await serverKey.check();
+      await authenticator.check();
+
+      const headers = {
+        'X-Correlation-Id': authenticator.getCorrelationId(),
+        Authorization: authenticator.getAccess(),
+        ...params.headers,
+      };
+
+      const cryptor = serverKey.getCryptor();
+      const response = await fetch({
+        method: 'POST',
+        url: configs.graphql,
+        ...params,
+        headers,
+        data: cryptor.encrypt(params.data),
+        transformResponse: [(d) => {
+          const data = JSON.parse(d);
+          return cryptor.decrypt(data.ciphertext, data.serverKey);
+        }],
+      });
+
+      const { data, errors } = response.data;
+      if (errors !== undefined) throw new GraphQLError(errors);
+
+      const result = findNode(data);
+      if (hash !== undefined) {
+        cache.set(hash, result);
+        listeners.emit(hash, result);
+      }
+      return result;
+    } catch (error) {
+      configs.errorHander(error);
+
+      cache.set(hash, error);
+      listeners.emit(hash, error);
+
+      throw error;
+    }
   };
 }

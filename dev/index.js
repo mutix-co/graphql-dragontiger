@@ -14,10 +14,15 @@ const styleguide = styleguidist({
   logger: {
     warn: console.warn,
     info: console.log,
-    debug: console.log,
+    false: console.log,
   },
   ignore: ['**/__tests__/**', '**/__mocks__/**', '**/index.js'],
   pagePerSection: true,
+  styles: {
+    StyleGuide: {
+      '@global body > iframe': { display: 'none' },
+    },
+  },
   usageMode: 'expand',
   sections: [{
     name: 'utils',
@@ -54,6 +59,9 @@ const styleguide = styleguidist({
     }, {
       name: 'useQuery',
       content: `${root}/hooks/useQuery/useQuery.md`,
+    }, {
+      name: 'useNode',
+      content: `${root}/hooks/useNode/useNode.md`,
     }, {
       name: 'usePagination',
       content: `${root}/hooks/usePagination/usePagination.md`,
@@ -93,7 +101,14 @@ const styleguide = styleguidist({
   configureServer(app) {
     app.use(express.json());
 
-    const secret = new SecretServer();
+    const secret = new SecretServer(() => ({
+      secretKey: new Uint8Array([
+        82, 181, 154, 119, 181, 69, 37, 175, 6, 221, 182, 153, 169, 125, 234, 136,
+        88, 166, 128, 49, 216, 23, 206, 42, 155, 223, 42, 245, 126, 200, 187, 12,
+      ]),
+      expireAt: 100,
+    }));
+    app.use('/certificate', secret.certificate());
     app.use(secret.express());
 
     [fetcher, apollo, uploader].forEach((server) => server({ app }));

@@ -13,6 +13,11 @@ export default class QueryBoundary extends React.Component {
     return { error };
   }
 
+  componentDidCatch(error) {
+    this.setState({ error });
+    return false;
+  }
+
   onRetry() {
     this.setState({ error: null });
   }

@@ -179,7 +179,7 @@ function Component({ input, autoReset, children }) {
 
 <Wrapper>
   <Component autoReset={2000}>Submit</Component>
-  <Component input={{ pending: 4000 }}>Pending</Component>
+  <Component input={{ pending: 3000 }}>Pending</Component>
   <Component input={{ pending: 0 }}>Error</Component>
 </Wrapper>
 ```

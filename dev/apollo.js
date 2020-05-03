@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const http = require('http');
 const gql = require('graphql-tag');
 const { ApolloServer, PubSub } = require('apollo-server-express');
@@ -21,6 +22,10 @@ module.exports = ({ app }) => {
     }
     type Query
     type Mutation
+
+    extend type Query {
+      node(id: ID!): Node
+    }
   
     extend type Query {
       user: User
@@ -46,21 +51,22 @@ module.exports = ({ app }) => {
       status: String
       bookshelf: Bookshelf
     }
-  
+
     extend type Query {
       tags: [Tag]
     }
     extend type Mutation {
-      addTag(input: AddTagInput!): AddTagPayload
+      updateTag(input: UpdateTagInput!): UpdateTagPayload
     }
     type Tag implements Node {
       id: ID
       value: String
     }
-    input AddTagInput {
+    input UpdateTagInput {
+      id: ID
       value: String
     }
-    type AddTagPayload {
+    type UpdateTagPayload {
       status: String
       tag: Tag
     }
@@ -97,10 +103,10 @@ module.exports = ({ app }) => {
     }
   `;
 
-  const tags = [{
-    id: Math.round(Math.random() * 0xFFFFFFFF),
-    value: 'Tag 01',
-  }];
+  const tags = {
+    TAG_01: 'Tag 01',
+    TAG_02: 'Tag 02',
+  };
 
   const posts = [{
     id: Math.round(Math.random() * 0xFFFFFFFF),
@@ -108,9 +114,16 @@ module.exports = ({ app }) => {
   }];
 
   const resolvers = {
+    Node: {
+      // eslint-disable-next-line no-underscore-dangle
+      __resolveType() {
+        return 'Tag';
+      },
+    },
     Query: {
       user: (__, ___, { passport }) => passport.user,
-      tags: () => tags,
+      node: (__, { id }) => ({ id, value: tags[id] }),
+      tags: () => _.map(tags, (value, id) => ({ id, value })),
       posts: () => ({
         totalCount: posts.length,
         nodes: posts,
@@ -121,7 +134,7 @@ module.exports = ({ app }) => {
       }),
     },
     Mutation: {
-      setBookshelf: async (__, { input }) => {
+      async setBookshelf(__, { input }) {
         const timestamp = Date.now();
         if (input.pending === 0) throw new ForbiddenError('Cannot read bookshelf.');
         await new Promise((resolve) => setTimeout(resolve, input.pending || 0));
@@ -134,10 +147,15 @@ module.exports = ({ app }) => {
           },
         };
       },
+      updateTag(__, { input }) {
+        const { id, value } = input;
+        tags[id] = value;
+        return { status: 'ok', tag: tags[id] };
+      },
       addPost: (__, { input: { content } }) => {
-        posts.push(value);
+        posts.push();
         pubsub.publish('onAddPost', {
-          onAddPost: { id: posts.length - 1, value },
+          onAddPost: { id: posts.length - 1, value: null },
         });
         return { status: 'ok', content };
       },
@@ -153,9 +171,7 @@ module.exports = ({ app }) => {
     typeDefs,
     resolvers,
     context: authorization.contextParser(),
-    formatError(err) {
-      return formatError(err);
-    },
+    formatError,
   });
   apolloServer.applyMiddleware({ app });
 

@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 
 export default function QueryError({ error, onRetry }) {
   return (
-    <div click={onRetry}>{error.message}</div>
+    <div role="button" tabIndex="0" onKeyPress={onRetry} onClick={onRetry}>
+      {error.message}
+    </div>
   );
 }
 

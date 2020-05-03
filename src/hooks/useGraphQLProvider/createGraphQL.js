@@ -21,14 +21,14 @@ export default function createGraphQL({
       const data = { query, variables };
       const response = await execute({ ...params, data, hash });
       const field = getFieldName(tag);
-      return response.data.data[field];
+      return response[field];
     },
     async mutate(tag, input = {}, params = {}) {
       const query = gqlPrint(tag);
       const data = { query, variables: { input } };
       const response = await execute({ ...params, data });
       const field = getFieldName(tag);
-      return response.data.data[field];
+      return response[field];
     },
     subscribe() {
       return null;

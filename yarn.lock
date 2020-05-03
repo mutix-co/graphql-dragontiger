@@ -7830,10 +7830,10 @@ jsx-ast-utils@^2.2.1, jsx-ast-utils@^2.2.3:
     array-includes "^3.0.3"
     object.assign "^4.1.0"
 
-jw25519@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/jw25519/-/jw25519-1.1.0.tgz#973aa14f0cdd573fb2bdd2c2e79d86211f8791e4"
-  integrity sha512-8IXV6FQjw/25ktb36LWbSW3mz9xUgN1cE5KAnUSLv1WrG6KJnqJtyPlj3jfjIgAYApTovJJm6nVv2eL8FV5bdQ==
+jw25519@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/jw25519/-/jw25519-1.2.0.tgz#5de64960212a59fc76a5b154f63fcff65706f706"
+  integrity sha512-shRutmhsQdz5kjtv5k5Uy5pCVxz2Je/6j5diwgDhx5/5gT5lOiXxkkeCL4zMGCv9yK1jxCRoqyflRr4FSQGI1g==
   dependencies:
     tweetnacl "^1.0.3"
 
