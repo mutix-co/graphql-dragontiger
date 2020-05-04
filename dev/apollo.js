@@ -149,8 +149,7 @@ module.exports = ({ app }) => {
       },
       updateTag(__, { input }) {
         const { id, value } = input;
-        tags[id] = value;
-        return { status: 'ok', tag: tags[id] };
+        return { status: 'ok', tag: { id, value } };
       },
       addPost: (__, { input: { content } }) => {
         posts.push();

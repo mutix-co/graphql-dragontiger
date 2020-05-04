@@ -40,13 +40,13 @@ export default function useNode(id, ...args) {
 
   if (client.cache.has(nodeId) === false) {
     const error = client.cache.get(hash);
-    if (error instanceof Error) return [null, { error, refresh, suspender: error }];
+    if (error instanceof Error) return [null, { error, refresh, suspense: error }];
 
-    const suspender = hash !== null
+    const suspense = hash !== null
       ? refresh() : new Promise((resolve) => client.listeners.once(nodeId, () => resolve()));
-    return [null, { error: null, refresh, suspender }];
+    return [null, { error: null, refresh, suspense }];
   }
 
   const node = client.cache.get(nodeId);
-  return [node, { error: null, refresh, suspender: null }];
+  return [node, { error: null, refresh, suspense: null }];
 }
