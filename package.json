@@ -9,7 +9,7 @@
     "dev:server": "node ./dev",
     "test:eslint": "eslint ./src",
     "test:jest": "jest --coverage --detectOpenHandles --forceExit",
-    "test:chrome": "start-server-and-test dev:server http://localhost:6060 cy:run"
+    "test:browser": "start-server-and-test dev:server http://localhost:6060 cy:run"
   },
   "author": "mutix",
   "license": "MIT",
@@ -68,6 +68,7 @@
     "jw25519": "^1.2.0",
     "lodash": "^4.17.15",
     "react-styleguidist": "^11.0.5",
-    "subscriptions-transport-ws": "^0.9.16"
+    "subscriptions-transport-ws": "^0.9.16",
+    "wait-on": "^4.0.2"
   }
 }
