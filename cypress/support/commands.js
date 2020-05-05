@@ -1,25 +1,18 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add("login", (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+import get from 'lodash/get';
+
+Cypress.Commands.add('findReact', { prevSubject: 'optional' }, (subject, selector) => {
+  const results = [];
+  const find = (dom) => {
+    Cypress.$(dom).children().each((idx, $el) => {
+      const getInternalInstance = $el[Object.keys($el).find((k) => k.startsWith('__reactInternalInstance'))];
+      if (getInternalInstance === undefined) return;
+      const name = get(getInternalInstance, ['return', 'elementType', 'name']);
+      if (name === selector) results.push($el.parentElement);
+    });
+    Cypress.$(dom).children().each((idx, $el) => find($el));
+  };
+
+  find(Cypress.$(subject || 'body'));
+
+  return results.length > 1 ? results : results[0];
+});

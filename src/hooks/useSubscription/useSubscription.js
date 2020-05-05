@@ -11,6 +11,6 @@ export function format(name, result, parent) {
   };
 }
 
-export default function useSubscription(name, subscription) {
+export default function useSubscription() {
 
 }

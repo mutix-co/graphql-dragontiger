@@ -1,65 +1,55 @@
-const _ = require('lodash');
+const assign = require('lodash/assign');
+const identity = require('lodash/identity');
+const forEach = require('lodash/forEach');
+const includes = require('lodash/includes');
 const crypto = require('crypto');
 const { JSONWebSignature } = require('jw25519');
 const { AuthenticationError } = require('apollo-server-errors');
 
+const { NODE_ENV } = process.env;
+
 function AuthorizationServer(key, options) {
   this.cryptor = new JSONWebSignature(key);
 
-  _.assign(
+  assign(
     this,
-    _.defaults(options, {
+    {
       expiresIn: 14 * 24 * 60 * 60,
-      signInHandler: _.identity,
-      signOutHandler: _.identity,
-      reviewHandler: _.identity,
-      errorHander: _.identity,
-    }),
+      signInHandler: identity,
+      signOutHandler: identity,
+      reviewHandler: identity,
+      errorHander: identity,
+    },
+    options,
   );
 
   return this;
 }
 
 AuthorizationServer.prototype = {
-  signRefresh(passport, ...args) {
-    return this.sign(
-      {
-        sub: 'auth-refresh',
-        exp: Math.floor(Date.now() / 1000) + this.expiresIn,
-        passport,
-      },
-      ...args,
-    );
-  },
-  signAccess(passport, ...args) {
-    return this.sign(
-      {
-        sub: 'auth-access',
-        exp: Math.floor(Date.now() / 1000) + 60 * 60,
-        passport,
-      },
-      ...args,
-    );
-  },
-  verifyRefresh(token, options) {
-    const { passport } = this.verify(token, {
+  signRefresh(passport) {
+    const { cryptor } = this;
+    return cryptor.sign({
       sub: 'auth-refresh',
-      ...options,
+      exp: Math.floor(Date.now() / 1000) + this.expiresIn,
+      passport,
     });
-    return passport;
   },
-  verifyAccess(token, options) {
-    if (!token) return {};
-    const { passport } = this.verify(token, { sub: 'auth-access', ...options });
-    return passport;
+  signAccess(passport) {
+    const { cryptor } = this;
+    return cryptor.sign({
+      sub: 'auth-access',
+      exp: Math.floor(Date.now() / 1000) + 60 * 60,
+      passport,
+    });
   },
   async signIn(params) {
     const passport = await this.signInHandler(params);
     const { correlationId } = params;
 
     if (process.env !== 'production') {
-      _.forEach(passport, (value) => {
-        if (_.includes(['boolean', 'string', 'number'], typeof value) === false) {
+      forEach(passport, (value) => {
+        if (includes(['boolean', 'string', 'number'], typeof value) === false) {
           throw new TypeError('passport must is boolean, string or number on sign-in');
         }
       });
@@ -75,12 +65,13 @@ AuthorizationServer.prototype = {
   },
   async renew(params) {
     const { correlationId } = params;
-    const signature = this.verifyRefresh(params.refreshToken);
+    const { passport: signature } = this.verify(params.refreshToken, { sub: 'auth-refresh' });
+
     const passport = await this.renewHandler({ ...params, ...signature });
 
-    if (process.env !== 'production') {
-      _.forEach(passport, (value) => {
-        if (_.includes(['boolean', 'string', 'number'], typeof value) === false) {
+    if (NODE_ENV !== 'production') {
+      forEach(passport, (value) => {
+        if (includes(['boolean', 'string', 'number'], typeof value) === false) {
           throw new TypeError('passport must is boolean, string or number on renew');
         }
       });
@@ -93,7 +84,7 @@ AuthorizationServer.prototype = {
   express() {
     return async (req, res) => {
       const { action } = req.body;
-      if (!_.includes(['signIn', 'signOut', 'renew'], action)) {
+      if (includes(['signIn', 'signOut', 'renew'], action) === false) {
         res.sendStatus(404);
         return;
       }
@@ -109,6 +100,7 @@ AuthorizationServer.prototype = {
         res.cookie('x-correlation-id', correlationId, { expires, httpOnly: true });
         res.json({ ...result, status: 'ok', correlationId }).end();
       } catch (e) {
+        this.errorHander(e);
         res.status(403).send({ error: e.message });
       }
     };
@@ -127,7 +119,8 @@ AuthorizationServer.prototype = {
 
       try {
         if (token === undefined) return context;
-        const passport = await this.verifyAccess(token);
+        const { cryptor } = this;
+        const { passport } = cryptor.verify(token, { sub: 'auth-access' });
         return { ...context, passport };
       } catch (e) {
         this.errorHander(e);

@@ -3,7 +3,7 @@ context('QueryBoundary', () => {
     cy.visit('http://localhost:6060/#/client/QueryBoundary');
   });
 
-  it('succeed', () => {
+  it('successfully', () => {
     cy.on('uncaught:exception', (err) => {
       expect(err.message).include('query error');
       return false;

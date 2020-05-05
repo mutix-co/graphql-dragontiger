@@ -3,18 +3,11 @@ const http = require('http');
 const gql = require('graphql-tag');
 const { ApolloServer, PubSub } = require('apollo-server-express');
 const { ForbiddenError } = require('apollo-server-errors');
-const { Base } = require('jw25519');
 const formatError = require('../src/utils/formatError');
-const AuthorizationServer = require('../src/server/AuthorizationServer/AuthorizationServer');
-
-const { base16 } = Base;
-const key = base16.decode('fcaed636b35fbcf2deda7cf71ead026009afd7e3dc257df60a4c008e4d65a6b7491394e268850f85d82a8dbff0fbb31942e9eff2fa8ad2f2964e106b2e2cb316');
+const AuthorizationServer = require('../src/server/AuthorizationServer');
 
 module.exports = ({ app }) => {
   const pubsub = new PubSub();
-
-  const authorization = new AuthorizationServer(key);
-  app.post('/auth', authorization.express());
 
   const typeDefs = gql`
     interface Node {
@@ -165,6 +158,15 @@ module.exports = ({ app }) => {
       },
     },
   };
+
+  const key = [
+    252, 174, 214, 54, 179, 95, 188, 242, 222, 218, 124, 247, 30, 173, 2, 96, 9, 175, 215,
+    227, 220, 37, 125, 246, 10, 76, 0, 142, 77, 101, 166, 183, 73, 19, 148, 226, 104, 133,
+    15, 133, 216, 42, 141, 191, 240, 251, 179, 25, 66, 233, 239, 242, 250, 138, 210, 242,
+    150, 78, 16, 107, 46, 44, 179, 22,
+  ];
+  const authorization = new AuthorizationServer(key);
+  app.use('/authorization', authorization.express());
 
   const apolloServer = new ApolloServer({
     typeDefs,
