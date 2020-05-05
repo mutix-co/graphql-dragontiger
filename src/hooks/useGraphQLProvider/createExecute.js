@@ -57,12 +57,15 @@ export default function createExecute(client) {
         cache.set(hash, result);
         listeners.emit(hash, result);
       }
+
       return result;
     } catch (error) {
       configs.errorHander(error);
 
-      cache.set(hash, error);
-      listeners.emit(hash, error);
+      if (hash !== undefined) {
+        cache.set(hash, error);
+        listeners.emit(hash, error);
+      }
 
       throw error;
     }

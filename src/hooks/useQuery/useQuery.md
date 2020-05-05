@@ -1,10 +1,9 @@
+### Sample Code
 ```js static
-/**
- * @param {GraphQL} tag
- * @param {Object} variables
- * @param {Object} params
- * @param {boolean} params.ignoreErrors
- */
+function Sample() {
+  const [data, { error, refresh, suspense }] = useQuery(GRAPHQL_TAG, variables, params);
+  return <div>{data}</div>
+}
 ```
 
 ```jsx
@@ -16,7 +15,10 @@ import useQuery from "./";
 const QUERY_TAGS = gql`query { tags { id value } }`;
 
 function Component() {
-  const [data] = useQuery(QUERY_TAGS);
+  const [data, { suspense }] = useQuery(QUERY_TAGS);
+
+  if (suspense) throw suspense;
+
   return (
     <>
       {_.map(data, ({ id, value }) => <div key={id}>{value}</div>)}
@@ -24,7 +26,7 @@ function Component() {
   );
 }
 
-<Suspense fallback={<div>loading</div>}>
+<Suspense>
   <Component />
 </Suspense>
 ```

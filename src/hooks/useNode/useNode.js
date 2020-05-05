@@ -37,10 +37,7 @@ export default function useNode(id, ...args) {
     if (hash !== null && client.cache.expired(hash)) refresh();
   }, [client, hash, refresh]);
 
-  useEffect(() => {
-    const unlistener = client.listeners.addListener(nodeId, () => forceUpdate());
-    return unlistener;
-  }, [client, nodeId]);
+  useEffect(() => client.listeners.addListener(nodeId, () => forceUpdate()), [client, nodeId]);
 
   if (client.cache.has(nodeId) === false) {
     const error = client.cache.get(hash);
