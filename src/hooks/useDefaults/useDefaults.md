@@ -1,3 +1,12 @@
+
+### Sample Code
+```js static
+function Sample() {
+  const data = useDefaults(defaults, options);
+  return <div data={data} />;
+}
+```
+
 ```js
 import { useReducer } from 'react';
 import useDefaults from './useDefaults';

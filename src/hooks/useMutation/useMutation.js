@@ -1,5 +1,5 @@
 import identity from 'lodash/identity';
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDefaults, useGraphQLClient } from '..';
 
 export default function useMutation(tag, ...args) {
@@ -45,4 +45,7 @@ export default function useMutation(tag, ...args) {
   }, [request, params, resetState]);
 
   return [mutate, { error, state, resetState }];
+
+  // eslint-disable-next-line no-unreachable
+  return <div />;
 }

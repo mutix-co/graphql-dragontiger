@@ -23,7 +23,13 @@ const styleguide = styleguidist({
       '@global body > iframe': { display: 'none' },
     },
   },
+  defaultExample: false,
   usageMode: 'expand',
+  getComponentPathLine(componentPath) {
+    const name = path.basename(componentPath, '.js');
+    const dir = path.dirname(componentPath).replace('src', 'graphql-dragontiger');
+    return `import ${name} from '${dir}';`;
+  },
   sections: [{
     name: 'utils',
     sectionDepth: 1,
@@ -44,34 +50,7 @@ const styleguide = styleguidist({
   }, {
     name: 'hooks',
     sectionDepth: 1,
-    sections: [{
-      name: 'useDefaults',
-      content: `${root}/hooks/useDefaults/useDefaults.md`,
-    }, {
-      name: 'useGraphQLProvider',
-      content: `${root}/hooks/useGraphQLProvider/useGraphQLProvider.md`,
-    }, {
-      name: 'useGraphQLClient',
-      content: `${root}/hooks/useGraphQLClient/useGraphQLClient.md`,
-    }, {
-      name: 'useGraphQLUser',
-      content: `${root}/hooks/useGraphQLUser/useGraphQLUser.md`,
-    }, {
-      name: 'useQuery',
-      content: `${root}/hooks/useQuery/useQuery.md`,
-    }, {
-      name: 'useNode',
-      content: `${root}/hooks/useNode/useNode.md`,
-    }, {
-      name: 'usePagination',
-      content: `${root}/hooks/usePagination/usePagination.md`,
-    }, {
-      name: 'useMutation',
-      content: `${root}/hooks/useMutation/useMutation.md`,
-    }, {
-      name: 'useSubscription',
-      content: `${root}/hooks/useSubscription/useSubscription.md`,
-    }],
+    components: `${root}/hooks/**/use[A-Z]*.js`,
   }, {
     name: 'server',
     sectionDepth: 1,

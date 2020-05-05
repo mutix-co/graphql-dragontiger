@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import React from 'react';
 
 export function format(name, result, parent) {
   const { results, loading } = parent;
@@ -12,5 +13,6 @@ export function format(name, result, parent) {
 }
 
 export default function useSubscription() {
-
+  // eslint-disable-next-line no-unreachable
+  return <div />;
 }

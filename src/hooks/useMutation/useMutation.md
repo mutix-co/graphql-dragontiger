@@ -1,3 +1,14 @@
+### Sample Code
+```js static
+function Component() {
+  const [mutate, { error, state, resetState }] = useMutation(GRAPHQL_TAG, { autoReset });
+
+  return (
+    <Button state={state} onClick={() => mutate(input)} />
+  );
+}
+```
+
 ```jsx
 import { useCallback, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';

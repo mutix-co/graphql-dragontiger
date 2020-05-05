@@ -1,4 +1,4 @@
-import {
+import React, {
   useEffect, useCallback, useState, useMemo,
 } from 'react';
 import getFieldName from '../../utils/getFieldName';
@@ -46,4 +46,7 @@ export default function useQuery(tag, ...args) {
   if (error) throw error;
 
   return [data, { refresh }];
+
+  // eslint-disable-next-line no-unreachable
+  return <div />;
 }

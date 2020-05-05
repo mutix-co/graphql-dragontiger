@@ -1,15 +1,22 @@
-import { useRef, useState } from 'react';
-import isEqual from 'lodash/isEqual';
+import React, { useMemo, useState } from 'react';
+import identity from 'lodash/identity';
+import useDefaults from '../useDefaults';
 import createClient from './createClient';
 
 export default function useGraphQLProvider(options) {
-  const [user, setUser] = useState();
-  const ref = useRef();
+  const [user, userHander] = useState();
+  const configs = useDefaults(options, {
+    graphql: '/graphql',
+    authorization: '/authorization',
+    certificate: '/certificate',
+    errorHander: identity,
+    userHander,
+  });
 
-  if (ref.current === undefined || isEqual(options, ref.current.options) === false) {
-    const client = createClient(options, setUser);
-    ref.current = { options, client };
-  }
+  const client = useMemo(() => createClient(configs), [configs]);
 
-  return [ref.current.client, user];
+  return [client, user];
+
+  // eslint-disable-next-line no-unreachable
+  return <div />;
 }

@@ -1,5 +1,3 @@
-import defaults from 'lodash/defaults';
-import identity from 'lodash/identity';
 import { print } from 'graphql/language/printer';
 import defaultStorage from './storage';
 import defaultSession from './session';
@@ -12,14 +10,7 @@ import createGraphQL from './createGraphQL';
 import createListeners from './createListeners';
 import createWebSocket from './createWebSocket';
 
-export default function createClient(options) {
-  const configs = defaults({}, options, {
-    graphql: '/graphql',
-    authorization: '/authorization',
-    certificate: '/certificate',
-    errorHander: identity,
-  });
-
+export default function createClient(configs) {
   const service = {};
 
   service.session = configs.session || defaultSession;
