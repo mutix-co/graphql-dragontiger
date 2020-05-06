@@ -2,7 +2,7 @@ const _ = require('lodash');
 const http = require('http');
 const gql = require('graphql-tag');
 const { ApolloServer, PubSub } = require('apollo-server-express');
-const { ForbiddenError } = require('apollo-server-errors');
+const { AuthenticationError, ForbiddenError } = require('apollo-server-errors');
 const formatError = require('../src/utils/formatError');
 const AuthorizationServer = require('../src/server/AuthorizationServer');
 
@@ -165,7 +165,22 @@ module.exports = ({ app }) => {
     15, 133, 216, 42, 141, 191, 240, 251, 179, 25, 66, 233, 239, 242, 250, 138, 210, 242,
     150, 78, 16, 107, 46, 44, 179, 22,
   ];
-  const authorization = new AuthorizationServer(key);
+  const authorization = new AuthorizationServer(key, {
+    signInHandler(params) {
+      if (params.username === 'admin') {
+        return { nickname: 'admin', isAdmin: true };
+      }
+
+      throw new AuthenticationError();
+    },
+    signOutHandler() {
+      return {};
+    },
+    reviewHandler(params) {
+      if (params.change === 'notfound') throw new AuthenticationError();
+      return params;
+    },
+  });
   app.use('/authorization', authorization.express());
 
   const apolloServer = new ApolloServer({
