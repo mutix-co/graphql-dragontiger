@@ -1,6 +1,6 @@
 {
-  "extends": ["airbnb", "airbnb/hooks", "plugin:cypress/recommended"],
-  "plugins": ["cypress"],
+  "extends": ["airbnb", "airbnb/hooks", "plugin:cypress/recommended", "plugin:jest/recommended"],
+  "plugins": ["cypress", "jest"],
   "env": {
     "browser": true,
     "node": true
@@ -9,7 +9,7 @@
     "react/jsx-filename-extension": [2, { "extensions": [".js", ".jsx"] }],
     "react/prefer-stateless-function": [2, { "ignorePureComponents": true }],
     "import/no-extraneous-dependencies": [2, {
-      "devDependencies": ["dev/**/*.js", "cypress/**/*.js", "**/__mocks__/**/*.js", "**/__tests__/**/*.js"],
+      "devDependencies": ["dev/**/*.js", "cypress/**/*.js", "**/__mocks__/**/*.js", "**/__tests__/**/*.js"]
     }]
   },
   "globals": {
