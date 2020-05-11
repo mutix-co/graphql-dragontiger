@@ -6,6 +6,7 @@ import multer from 'multer';
 import axios from 'axios';
 import FormData from 'form-data';
 import SignatureServer from '..';
+import SignatureSDK from '../../SignatureSDK';
 
 const signatureServer = new SignatureServer(
   base16.decode('61949dde6de8402e73f9a0251ca4542aba0e2c48b9297a9df61727ba892acddddc5f72b87838b88e834dedffc1977a74c42e59ccdfe4edd18026b7c5aa6972e1'),
@@ -27,8 +28,13 @@ const upload = multer();
 app.post('/form', upload.any(), signatureServer.express(), handler);
 
 const instance = axios.create({
-  baseURL: `http://localhost:${port}/`,
+  baseURL: `http://localhost:${port}`,
 });
+
+const sdk = new SignatureSDK(
+  `http://localhost:${port}`,
+  base16.decode('61949dde6de8402e73f9a0251ca4542aba0e2c48b9297a9df61727ba892acddddc5f72b87838b88e834dedffc1977a74c42e59ccdfe4edd18026b7c5aa6972e1'),
+);
 
 describe('SignatureServer', () => {
   afterAll(() => server.close());
@@ -37,13 +43,28 @@ describe('SignatureServer', () => {
     it('successfully get params', async () => {
       const id = '2494ad23-05c8-4e5d-966b-8864a94e89d6';
       const ciphertext = signatureServer.generateUrl({ id });
-      const result = await instance.get(ciphertext);
+      const result = await instance.get(`/${ciphertext}`);
       expect(result).toEqual(
         expect.objectContaining({
           status: 200,
           statusText: 'OK',
-          config: expect.objectContaining({ url: ciphertext }),
+          config: expect.objectContaining({ url: `/${ciphertext}` }),
         }),
+      );
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          params: expect.objectContaining({ id, sub: 'request-token' }),
+        }),
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
+    it('successfully use SDK', async () => {
+      const id = '2494ad23-05c8-4e5d-966b-8864a94e89d6';
+      const result = await sdk.get('', { id });
+      expect(result).toEqual(
+        expect.objectContaining({ status: 200, statusText: 'OK' }),
       );
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -66,6 +87,21 @@ describe('SignatureServer', () => {
       const id = '2494ad23-05c8-4e5d-966b-8864a94e89d6';
       const ciphertext = signatureServer.generateBody({ id });
       const result = await instance.post('/json', { ciphertext });
+      expect(result).toEqual(
+        expect.objectContaining({ status: 200, statusText: 'OK' }),
+      );
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          body: expect.objectContaining({ id, sub: 'request-token' }),
+        }),
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
+    it('successfully use SDK', async () => {
+      const id = '2494ad23-05c8-4e5d-966b-8864a94e89d6';
+      const result = await sdk.post('/json', { id });
       expect(result).toEqual(
         expect.objectContaining({ status: 200, statusText: 'OK' }),
       );

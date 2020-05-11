@@ -7,8 +7,9 @@
     "cy:run": "cypress run",
     "cy:open": "cypress open",
     "dev:server": "node ./dev",
+    "test": "npm run test:eslint; npm run test:jest; npm run test:browser",
     "test:eslint": "eslint ./src",
-    "test:jest": "jest --coverage --detectOpenHandles --forceExit",
+    "test:jest": "jest ./src --coverage --forceExit",
     "test:browser": "start-server-and-test dev:server http://localhost:6060 cy:run"
   },
   "author": "mutix",
@@ -30,10 +31,8 @@
     "react": "*"
   },
   "devDependencies": {
-    "@cypress/code-coverage": "^3.5.3",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
-    "babel-plugin-istanbul": "^6.0.0",
     "cypress": "^4.3.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
@@ -48,11 +47,9 @@
     "form-data": "^3.0.0",
     "graphql": "^15.0.0",
     "graphql-tag": "^2.10.3",
-    "istanbul-lib-coverage": "^3.0.0",
     "jest": "^26.0.1",
     "multer": "^1.4.2",
     "next": "^9.3.5",
-    "nyc": "^15.0.1",
     "otplib": "^12.0.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
