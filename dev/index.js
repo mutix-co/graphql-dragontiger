@@ -62,6 +62,9 @@ const styleguide = styleguidist({
       content: `${root}/server/SecretServer/SecretServer.md`,
     }],
   }],
+  moduleAliases: {
+    examples: path.resolve(__dirname, 'examples'),
+  },
   webpackConfig: {
     devtool: 'source-map',
     module: {

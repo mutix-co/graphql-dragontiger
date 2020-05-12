@@ -4,11 +4,11 @@ context('useDefaults', () => {
   });
 
   it('successfully', () => {
-    cy.get('[data-testid="useDefaults-example-0"]').as('component');
-    cy.get('@component').find('[data-testid="result"]').as('result');
-    cy.get('@component').find('[data-testid="value"]').as('value');
-    cy.get('@component').find('[data-testid="increment"]').as('increment');
-    cy.get('@component').find('[data-testid="no-change"]').as('no-change');
+    cy.get('[data-testid="Example-useDefaults"]').as('example');
+    cy.get('@example').find('[data-testid="Value-isSame"]').as('result');
+    cy.get('@example').find('[data-testid="Value-Value"]').as('value');
+    cy.get('@example').find('[name="increment"]').as('increment');
+    cy.get('@example').find('[name="no-change"]').as('no-change');
 
     cy.get('@result').should('contain', 'no 0');
 

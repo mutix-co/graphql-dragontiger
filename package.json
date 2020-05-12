@@ -1,6 +1,6 @@
 {
   "name": "graphql-dragontiger",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "cy:open": "cypress open",
     "dev:server": "node ./dev",
     "test": "npm run test:eslint; npm run test:jest; npm run test:browser",
-    "test:eslint": "eslint ./src",
+    "test:eslint": "eslint ./",
     "test:jest": "jest ./src --coverage --forceExit",
     "test:browser": "start-server-and-test dev:server http://localhost:6060 cy:run"
   },
@@ -33,6 +33,7 @@
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
+    "babel-plugin-react-data-testid": "^0.2.0",
     "cypress": "^4.3.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",

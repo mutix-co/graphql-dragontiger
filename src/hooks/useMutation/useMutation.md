@@ -1,6 +1,6 @@
 ### Sample Code
 ```js static
-function Component() {
+function Example() {
   const [mutate, { error, state, resetState }] = useMutation(GRAPHQL_TAG, { autoReset });
 
   return (
@@ -13,6 +13,8 @@ function Component() {
 import { useCallback, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import gql from 'graphql-tag';
+import ExampleSample from 'examples/Example';
+import Value from 'examples/Value';
 import useMutation from './useMutation';
 
 const spinFrames = keyframes`
@@ -53,11 +55,11 @@ const Wrapper = styled.div`
   }
 `;
 
-const Box = styled.div`
+const ExampleBox = styled(ExampleSample)`
   width: 90px;
 `;
 
-const Button = styled.div`
+const Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -71,6 +73,7 @@ const Button = styled.div`
   appearance: none;
   border: 0;
   margin: 0 auto;
+  font-size: 16px;
   transition: width .3s ease-in .05s, border-radius .3s ease-in .05s, color .3s ease-in .05s;
   
   &:focus {
@@ -157,7 +160,7 @@ const SET_BOOKSHELF = gql`
   }
 `;
 
-function Component({ input, autoReset, children }) {
+function Example({ name, input, autoReset, children }) {
   const [setBookshelf, { error, state, resetState }] = useMutation(SET_BOOKSHELF, { autoReset });
   const [mark, setMark] = useState(0);
 
@@ -177,20 +180,20 @@ function Component({ input, autoReset, children }) {
   }, [state, setBookshelf, resetState]);
 
   return (
-    <Box data-testid="component">
-      <div data-testid="mark">{mark}</div>
-      <div data-testid="state">{state}</div>
-      <div data-testid="error">{error && error.stacks[0].code}</div>
-      <Button data-testid="button" state={state} onClick={onClick}>
+    <ExampleBox name={name}>
+      <Value name="mark">{mark}</Value>
+      <Value name="state">{state}</Value>
+      <Value name="error">{error && error.stacks[0].code}</Value>
+      <Button state={state} onClick={onClick}>
         {children}
       </Button>
-    </Box>
+    </ExampleBox>
   );
 }
 
 <Wrapper>
-  <Component autoReset={2000}>Submit</Component>
-  <Component input={{ pending: 3000 }}>Pending</Component>
-  <Component input={{ pending: 0 }}>Error</Component>
+  <Example name="finish" autoReset={2000}>Submit</Example>
+  <Example name="pending" input={{ pending: 3000 }}>Pending</Example>
+  <Example name="failed" input={{ pending: 0 }}>Error</Example>
 </Wrapper>
 ```

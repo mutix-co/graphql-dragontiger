@@ -12,7 +12,14 @@
       "devDependencies": ["dev/**/*.js", "cypress/**/*.js", "**/__mocks__/**/*.js", "**/__tests__/**/*.js"]
     }]
   },
-  "globals": {
-    "fixture": true
-  }
+  "overrides": [
+    {
+      "files": ["*.spec.js"],
+      "rules": {
+        "jest/expect-expect": 0,
+        "jest/valid-expect-in-promise": 0,
+        "jest/valid-expect": 0
+      }
+    }
+  ]
 }

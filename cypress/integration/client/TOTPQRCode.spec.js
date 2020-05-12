@@ -9,7 +9,7 @@ context('TOTPQRCode', () => {
     const stub = cy.stub();
     cy.on('window:alert', stub);
 
-    cy.findReact('TOTPQRCode').as('example');
+    cy.get('[data-testid="Example-TOTPQRCode"]').as('example');
     cy.get('@example').find('.secret').invoke('text').then((secret) => {
       const token = authenticator.generate(secret);
       cy.get('@example').find('input').type(token);
@@ -23,7 +23,7 @@ context('TOTPQRCode', () => {
     const stub = cy.stub();
     cy.on('window:alert', stub);
 
-    cy.findReact('TOTPQRCode').as('example');
+    cy.get('[data-testid="Example-TOTPQRCode"]').as('example');
     cy.get('@example').find('input').type('XXXXXX');
     cy.get('@example').find('button').click().then(() => {
       expect(stub.getCall(0)).to.be.calledWith(false);

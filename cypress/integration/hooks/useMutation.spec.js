@@ -4,10 +4,10 @@ context('useMutation', () => {
   });
 
   it('finish', () => {
-    cy.get('[data-testid="useMutation-example-0"] [data-testid="component"]:eq(0)').as('component');
-    cy.get('@component').find('[data-testid="button"]').as('button');
-    cy.get('@component').find('[data-testid="mark"]').as('mark');
-    cy.get('@component').find('[data-testid="state"]').as('state');
+    cy.get('[data-testid="Example-finish"]').as('example');
+    cy.get('@example').find('button').as('button');
+    cy.get('@example').find('[data-testid="Value-mark"] [data-testid="value"]').as('mark');
+    cy.get('@example').find('[data-testid="Value-state"] [data-testid="value"]').as('state');
 
     cy.get('@button').click();
 
@@ -23,10 +23,10 @@ context('useMutation', () => {
   });
 
   it('pending', () => {
-    cy.get('[data-testid="useMutation-example-0"] [data-testid="component"]:eq(1)').as('component');
-    cy.get('@component').find('[data-testid="button"]').as('button');
-    cy.get('@component').find('[data-testid="mark"]').as('mark');
-    cy.get('@component').find('[data-testid="state"]').as('state');
+    cy.get('[data-testid="Example-pending"]').as('example');
+    cy.get('@example').find('button').as('button');
+    cy.get('@example').find('[data-testid="Value-mark"] [data-testid="value"]').as('mark');
+    cy.get('@example').find('[data-testid="Value-state"] [data-testid="value"]').as('state');
 
     cy.get('@button').click();
 
@@ -44,10 +44,10 @@ context('useMutation', () => {
   });
 
   it('failed', () => {
-    cy.get('[data-testid="useMutation-example-0"] [data-testid="component"]:eq(2)').as('component');
-    cy.get('@component').find('[data-testid="button"]').as('button');
-    cy.get('@component').find('[data-testid="error"]').as('error');
-    cy.get('@component').find('[data-testid="state"]').as('state');
+    cy.get('[data-testid="Example-failed"]').as('example');
+    cy.get('@example').find('button').as('button');
+    cy.get('@example').find('[data-testid="Value-error"] [data-testid="value"]').as('error');
+    cy.get('@example').find('[data-testid="Value-state"] [data-testid="value"]').as('state');
 
     cy.get('@button').click();
 
