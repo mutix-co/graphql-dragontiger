@@ -18,7 +18,9 @@ const { port } = server.address();
 
 const handler = jest.fn((req, res) => res.sendStatus(200));
 
-app.get('/:ciphertext', signatureServer.express(), handler);
+app.get('/params/:ciphertext', signatureServer.express(), handler);
+
+app.get('/use/*', signatureServer.express(), handler);
 
 app.post('/json', express.json(), signatureServer.express(), handler);
 
@@ -42,12 +44,32 @@ describe('SignatureServer', () => {
     it('successfully get params', async () => {
       const id = '2494ad23-05c8-4e5d-966b-8864a94e89d6';
       const ciphertext = signatureServer.generateUrl({ id });
-      const result = await instance.get(`/${ciphertext}`);
+      const result = await instance.get(`/params/${ciphertext}`);
       expect(result).toEqual(
         expect.objectContaining({
           status: 200,
           statusText: 'OK',
-          config: expect.objectContaining({ url: `/${ciphertext}` }),
+          config: expect.objectContaining({ url: `/params/${ciphertext}` }),
+        }),
+      );
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          params: expect.objectContaining({ id, sub: 'request-token' }),
+        }),
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
+    it('successfully get use', async () => {
+      const id = '2494ad23-05c8-4e5d-966b-8864a94e89d6';
+      const ciphertext = signatureServer.generateUrl({ id });
+      const result = await instance.get(`/use/${ciphertext}`);
+      expect(result).toEqual(
+        expect.objectContaining({
+          status: 200,
+          statusText: 'OK',
+          config: expect.objectContaining({ url: `/use/${ciphertext}` }),
         }),
       );
       expect(handler).toHaveBeenCalledWith(
@@ -61,7 +83,7 @@ describe('SignatureServer', () => {
 
     it('successfully use SDK', async () => {
       const id = '2494ad23-05c8-4e5d-966b-8864a94e89d6';
-      const result = await sdk.get('', { id });
+      const result = await sdk.get('/params', { id });
       expect(result).toEqual(
         expect.objectContaining({ status: 200, statusText: 'OK' }),
       );
@@ -75,7 +97,7 @@ describe('SignatureServer', () => {
     });
 
     it('when verify failed', async () => {
-      await expect(instance.get('XYZ')).rejects.toEqual(
+      await expect(instance.get('/params/XYZ')).rejects.toEqual(
         new Error('Request failed with status code 400'),
       );
     });

@@ -29,7 +29,8 @@ SignatureServer.prototype = {
     const { field, sub } = defaults(option, { field: 'ciphertext', sub: 'request-token' });
     return (req, res, next) => {
       try {
-        const ciphertext = req.params[field] || req.body[field];
+        const { url, params, body = {} } = req;
+        const ciphertext = params[field] || body[field] || url.substring(url.lastIndexOf('/') + 1);
         const payload = this.cryptor.verify(ciphertext, { sub });
         assign(req.params, payload);
         assign(req.body, payload);
