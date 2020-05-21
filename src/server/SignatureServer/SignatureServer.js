@@ -1,18 +1,19 @@
 const assign = require('lodash/assign');
 const defaults = require('lodash/defaults');
-const { JSONWebSignature: JWS } = require('jw25519');
+const { JSONWebSignature: JWS, base16 } = require('jw25519');
 
-const step = 12 * 60 * 60;
-const expire = 24 * 60 * 60;
+const { SIGNATURE_SECRET_KEY } = process.env;
 
-function SignatureServer(secretKey) {
-  this.cryptor = new JWS(secretKey);
+function SignatureServer(secretKey = SIGNATURE_SECRET_KEY, expire = 60 * 60) {
+  this.cryptor = new JWS(base16.decode(secretKey));
+  this.expire = expire;
 }
 
 SignatureServer.prototype = {
   generateUrl(payload) {
-    return this.cryptor.sign({
-      exp: Math.floor(Date.now() / 1000 / step) * step + expire,
+    const { cryptor, expire } = this;
+    return cryptor.sign({
+      exp: Math.floor(Date.now() / 1000 / expire) * expire + (expire * 2),
       iat: undefined,
       sub: 'request-token',
       ...payload,

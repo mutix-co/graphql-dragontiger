@@ -1,4 +1,4 @@
-const SecretServer = require('./SecretServer');
-const AuthorizationServer = require('./AuthorizationServer');
-
-module.exports = { SecretServer, AuthorizationServer };
+exports.SecretServer = require('./SecretServer');
+exports.AuthorizationServer = require('./AuthorizationServer');
+exports.SignatureServer = require('./SignatureServer');
+exports.SignatureSDK = require('./SignatureSDK');

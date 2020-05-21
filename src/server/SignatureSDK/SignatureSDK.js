@@ -3,8 +3,8 @@ const SignatureServer = require('../SignatureServer');
 
 const { SIGNATURE_SECRET_KEY } = process.env;
 
-function SignatureSDK(url, secretKey) {
-  this.cryptor = new SignatureServer(secretKey || SIGNATURE_SECRET_KEY);
+function SignatureSDK(url, secretKey = SIGNATURE_SECRET_KEY, expire = 60 * 60) {
+  this.cryptor = new SignatureServer(secretKey, expire);
   this.instance = axios.create({ baseURL: url });
   return this;
 }
@@ -23,11 +23,11 @@ SignatureSDK.prototype = {
     return this.instance.post(url, { ciphertext }, config);
   },
   put(url, data, config) {
-    const { ciphertext } = this.cryptor.generateBody(data);
+    const ciphertext = this.cryptor.generateBody(data);
     return this.instance.put(url, { ciphertext }, config);
   },
   patch(url, data, config) {
-    const { ciphertext } = this.cryptor.generateBody(data);
+    const ciphertext = this.cryptor.generateBody(data);
     return this.instance.patch(url, { ciphertext }, config);
   },
 };

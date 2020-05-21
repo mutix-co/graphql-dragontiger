@@ -1,7 +1,6 @@
 import fs from 'fs';
 import http from 'http';
 import express from 'express';
-import { base16 } from 'jw25519';
 import multer from 'multer';
 import axios from 'axios';
 import FormData from 'form-data';
@@ -9,7 +8,7 @@ import SignatureServer from '..';
 import SignatureSDK from '../../SignatureSDK';
 
 const signatureServer = new SignatureServer(
-  base16.decode('61949dde6de8402e73f9a0251ca4542aba0e2c48b9297a9df61727ba892acddddc5f72b87838b88e834dedffc1977a74c42e59ccdfe4edd18026b7c5aa6972e1'),
+  '61949dde6de8402e73f9a0251ca4542aba0e2c48b9297a9df61727ba892acddddc5f72b87838b88e834dedffc1977a74c42e59ccdfe4edd18026b7c5aa6972e1',
 );
 
 const app = express();
@@ -33,7 +32,7 @@ const instance = axios.create({
 
 const sdk = new SignatureSDK(
   `http://localhost:${port}`,
-  base16.decode('61949dde6de8402e73f9a0251ca4542aba0e2c48b9297a9df61727ba892acddddc5f72b87838b88e834dedffc1977a74c42e59ccdfe4edd18026b7c5aa6972e1'),
+  '61949dde6de8402e73f9a0251ca4542aba0e2c48b9297a9df61727ba892acddddc5f72b87838b88e834dedffc1977a74c42e59ccdfe4edd18026b7c5aa6972e1',
 );
 
 describe('SignatureServer', () => {

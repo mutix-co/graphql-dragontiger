@@ -1,6 +1,6 @@
 {
-  "name": "graphql-dragontiger",
-  "version": "0.1.1",
+  "name": "@mutix/graphql-dragontiger",
+  "version": "0.1.11",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,9 @@
     "test": "npm run test:eslint; npm run test:jest; npm run test:browser",
     "test:eslint": "eslint ./",
     "test:jest": "jest ./src --coverage --forceExit",
-    "test:browser": "start-server-and-test dev:server http://localhost:6060 cy:run"
+    "test:browser": "start-server-and-test dev:server http://localhost:6060 cy:run",
+    "prepublish": "npm run build",
+    "build": "babel src -d lib --ignore '**/__mocks__/**','**/__tests__/**','**/__snapshots__/**'"
   },
   "author": "mutix",
   "license": "MIT",
@@ -18,7 +20,9 @@
     "lib",
     "src",
     "server.js",
-    "client.js"
+    "hooks.js",
+    "client.js",
+    "utils.js"
   ],
   "browserslist": [
     "defaults"
@@ -31,6 +35,7 @@
     "react": "*"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-react-data-testid": "^0.2.0",
