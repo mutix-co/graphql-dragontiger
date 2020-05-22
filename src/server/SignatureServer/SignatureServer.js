@@ -25,6 +25,9 @@ SignatureServer.prototype = {
       ...payload,
     });
   },
+  verify(ciphertext, sub) {
+    return this.cryptor.verify(ciphertext, { sub });
+  },
   express(option) {
     const { field, sub } = defaults(option, { field: 'ciphertext', sub: 'request-token' });
     return (req, res, next) => {
