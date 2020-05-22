@@ -1,10 +1,8 @@
 const axios = require('axios');
 const SignatureServer = require('../SignatureServer');
 
-const { SIGNATURE_SECRET_KEY } = process.env;
-
-function SignatureSDK(url, secretKey = SIGNATURE_SECRET_KEY, expire = 60 * 60) {
-  this.cryptor = new SignatureServer(secretKey, expire);
+function SignatureSDK(url, secretKey) {
+  this.cryptor = typeof secretKey === 'string' ? new SignatureServer(secretKey) : secretKey;
   this.instance = axios.create({ baseURL: url });
   return this;
 }
