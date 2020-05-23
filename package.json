@@ -29,7 +29,10 @@
   ],
   "nyc": {
     "report-dir": "coverage-cypress",
-    "reporter": ["lcov", "text"]
+    "reporter": [
+      "lcov",
+      "text"
+    ]
   },
   "browserslist": [
     "defaults"
@@ -43,6 +46,7 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
+    "apollo-fetch": "^0.7.0",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-react-data-testid": "^0.2.0",
@@ -70,7 +74,7 @@
     "react-styleguidist": "^11.0.5",
     "start-server-and-test": "^1.11.0",
     "styled-components": "^5.1.0",
-    "ws": "^7.2.3"
+    "ws": "^7.3.0"
   },
   "dependencies": {
     "@cypress/code-coverage": "^3.7.4",
@@ -79,6 +83,7 @@
     "axios": "^0.19.2",
     "babel-jest": "^26.0.1",
     "babel-plugin-istanbul": "^6.0.0",
+    "cookie": "^0.4.1",
     "global": "^4.4.0",
     "jw25519": "^1.2.2",
     "lodash": "^4.17.15",
