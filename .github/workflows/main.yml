@@ -14,7 +14,33 @@ env:
 
 jobs:
 
-  e2e-cypress:
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js 10
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - name: Yarn
+        run: yarn install
+      - uses: Test
+        run: yarn test:eslint
+
+  jest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js 10
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - name: Yarn
+        run: yarn install
+      - uses: Test
+        run: yarn test:jest
+
+  browser-chrome:
     strategy:
       matrix:
         os: ['ubuntu-latest', 'windows-latest', 'macos-latest']
@@ -33,22 +59,7 @@ jobs:
           start: yarn dev:server
           wait-on: 'http://localhost:6060'
 
-  e2e-firefox:
-    runs-on: ubuntu-latest
-    container:
-      image: cypress/browsers:node10.16.3-chrome80-ff73
-      options: --user 1001
-    steps:
-      - uses: actions/checkout@v1
-      - name: Yarn
-        run: yarn install
-      - uses: cypress-io/github-action@v1
-        with:
-          browser: firefox
-          start: yarn dev:server
-          wait-on: 'http://localhost:6060'
-
-  e2e-edge:
+  browser-edge:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v1

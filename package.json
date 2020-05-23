@@ -9,8 +9,11 @@
     "dev:server": "node ./dev",
     "test": "npm run test:eslint; npm run test:jest; npm run test:browser",
     "test:eslint": "eslint ./",
-    "test:jest": "jest ./src --coverage --forceExit",
-    "test:browser": "start-server-and-test dev:server http://localhost:6060 cy:run",
+    "test:jest": "jest ./src --forceExit; nyc merge coverage-jest .nyc_output/jest.json",
+    "test:browser": "NODE_ENV=cypress start-server-and-test dev:server http://localhost:6060 cy:run; nyc merge coverage-cypress .nyc_output/cypress.json",
+    "cover": "npm run cover:merge; npm run cover:open",
+    "cover:merge": "nyc merge .nyc_output .nyc_output/out.json; nyc report --reporter lcov --reporter text --report-dir coverage;",
+    "cover:open": "open coverage/lcov-report/index.html",
     "prepublish": "npm run build",
     "build": "babel src -d lib --ignore '**/__mocks__/**','**/__tests__/**','**/__snapshots__/**'"
   },
@@ -24,6 +27,10 @@
     "client.js",
     "utils.js"
   ],
+  "nyc": {
+    "report-dir": "coverage-cypress",
+    "reporter": ["lcov", "text"]
+  },
   "browserslist": [
     "defaults"
   ],
@@ -66,10 +73,12 @@
     "ws": "^7.2.3"
   },
   "dependencies": {
+    "@cypress/code-coverage": "^3.7.4",
     "apollo-server-errors": "^2.4.1",
     "apollo-server-express": "^2.12.0",
     "axios": "^0.19.2",
     "babel-jest": "^26.0.1",
+    "babel-plugin-istanbul": "^6.0.0",
     "global": "^4.4.0",
     "jw25519": "^1.2.2",
     "lodash": "^4.17.15",

@@ -1,4 +1,9 @@
 {
   "presets": ["next/babel"],
-  "plugins": ["react-data-testid"]
+  "plugins": [],
+  "env": {
+    "cypress": {
+      "plugins": ["istanbul"]
+    }
+  }
 }
