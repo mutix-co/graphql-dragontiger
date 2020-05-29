@@ -159,12 +159,7 @@ module.exports = ({ app }) => {
     },
   };
 
-  const key = [
-    252, 174, 214, 54, 179, 95, 188, 242, 222, 218, 124, 247, 30, 173, 2, 96, 9, 175, 215,
-    227, 220, 37, 125, 246, 10, 76, 0, 142, 77, 101, 166, 183, 73, 19, 148, 226, 104, 133,
-    15, 133, 216, 42, 141, 191, 240, 251, 179, 25, 66, 233, 239, 242, 250, 138, 210, 242,
-    150, 78, 16, 107, 46, 44, 179, 22,
-  ];
+  const key = '61949dde6de8402e73f9a0251ca4542aba0e2c48b9297a9df61727ba892acddddc5f72b87838b88e834dedffc1977a74c42e59ccdfe4edd18026b7c5aa6972e1';
   const authorization = new AuthorizationServer(key, {
     signInHandler(params) {
       if (params.username === 'admin') {
@@ -183,10 +178,13 @@ module.exports = ({ app }) => {
   });
   app.use('/authorization', authorization.express());
 
+  app.use(authorization.expressParser());
+
   const apolloServer = new ApolloServer({
     typeDefs,
     resolvers,
-    context: authorization.contextParser(),
+    subscriptions: { onConnect: authorization.connectParser() },
+    context: authorization.apolloContext,
     formatError,
   });
   apolloServer.applyMiddleware({ app });

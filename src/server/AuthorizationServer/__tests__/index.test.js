@@ -1,5 +1,6 @@
 /* eslint-disable jest/no-try-expect */
 
+<<<<<<< HEAD
 import fs from 'fs';
 import http from 'http';
 import express from 'express';
@@ -8,6 +9,13 @@ import multer from 'multer';
 import axios from 'axios';
 import ws from 'ws';
 import { createApolloFetch } from 'apollo-fetch';
+=======
+import http from 'http';
+import express from 'express';
+import gql from 'graphql-tag';
+import axios from 'axios';
+import ws from 'ws';
+>>>>>>> feat(server): reassign body and params
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { ApolloServer, PubSub, withFilter } from 'apollo-server-express';
 import formatError from '../../../utils/formatError';
@@ -65,9 +73,7 @@ const apolloServer = new ApolloServer({
       },
     },
   },
-  subscriptions: {
-    onConnect: authorization.connectParser(),
-  },
+  subscriptions: { onConnect: authorization.connectParser() },
   context: authorization.apolloContext,
   formatError,
 });

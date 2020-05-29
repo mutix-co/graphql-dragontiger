@@ -9,8 +9,9 @@ function SignatureServer(secretKey) {
 SignatureServer.prototype = {
   generateUrl(payload, expire = 60 * 60) {
     const { cryptor } = this;
+    const block = expire / 2;
     return cryptor.sign({
-      exp: Math.floor(Date.now() / 1000 / expire) * expire + (expire * 2),
+      exp: Math.floor(Date.now() / 1000 / block) * block + expire,
       iat: undefined,
       sub: 'request-token',
       ...payload,
@@ -29,11 +30,11 @@ SignatureServer.prototype = {
     const { field, sub } = defaults(option, { field: 'ciphertext', sub: 'request-token' });
     return (req, res, next) => {
       try {
-        const { url, params, body = {} } = req;
+        const { url, params = {}, body = {} } = req;
         const ciphertext = params[field] || body[field] || url.substring(url.lastIndexOf('/') + 1);
         const payload = this.cryptor.verify(ciphertext, { sub });
-        assign(req.params, payload);
-        assign(req.body, payload);
+        req.params = assign(req.params, payload);
+        req.body = assign(req.body, payload);
         next();
       } catch (e) {
         res.status(400).send('invalid signature');

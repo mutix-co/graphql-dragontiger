@@ -24,6 +24,12 @@ app.get('/use/*', signatureServer.express(), handler);
 
 app.post('/json', express.json(), signatureServer.express(), handler);
 
+app.get('/get/:ciphertext', signatureServer.express(), handler);
+app.delete('/delete/:ciphertext', signatureServer.express(), handler);
+app.post('/post', express.json(), signatureServer.express(), handler);
+app.put('/put', express.json(), signatureServer.express(), handler);
+app.patch('/patch', express.json(), signatureServer.express(), handler);
+
 const upload = multer();
 
 app.post('/form', upload.any(), signatureServer.express(), handler);
@@ -42,7 +48,7 @@ describe('SignatureServer', () => {
 
   describe('generateUrl', () => {
     it('successfully get params', async () => {
-      const id = '2494ad23-05c8-4e5d-966b-8864a94e89d6';
+      const id = '2494ad2305c84e5d966b8864a94e89d6';
       const ciphertext = signatureServer.generateUrl({ id });
       const result = await instance.get(`/params/${ciphertext}`);
       expect(result).toEqual(
@@ -54,6 +60,7 @@ describe('SignatureServer', () => {
       );
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
+          body: expect.objectContaining({ id, sub: 'request-token' }),
           params: expect.objectContaining({ id, sub: 'request-token' }),
         }),
         expect.anything(),
@@ -61,8 +68,8 @@ describe('SignatureServer', () => {
       );
     });
 
-    it('successfully get use', async () => {
-      const id = '2494ad23-05c8-4e5d-966b-8864a94e89d6';
+    it('successfully get use URL', async () => {
+      const id = '2494ad2305c84e5d966b8864a94e89d6';
       const ciphertext = signatureServer.generateUrl({ id });
       const result = await instance.get(`/use/${ciphertext}`);
       expect(result).toEqual(
@@ -74,6 +81,7 @@ describe('SignatureServer', () => {
       );
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
+          body: expect.objectContaining({ id, sub: 'request-token' }),
           params: expect.objectContaining({ id, sub: 'request-token' }),
         }),
         expect.anything(),
@@ -82,13 +90,14 @@ describe('SignatureServer', () => {
     });
 
     it('successfully use SDK', async () => {
-      const id = '2494ad23-05c8-4e5d-966b-8864a94e89d6';
+      const id = '2494ad2305c84e5d966b8864a94e89d6';
       const result = await sdk.get('/params', { id });
       expect(result).toEqual(
         expect.objectContaining({ status: 200, statusText: 'OK' }),
       );
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
+          body: expect.objectContaining({ id, sub: 'request-token' }),
           params: expect.objectContaining({ id, sub: 'request-token' }),
         }),
         expect.anything(),
@@ -105,7 +114,7 @@ describe('SignatureServer', () => {
 
   describe('generateBody', () => {
     it('successfully get json', async () => {
-      const id = '2494ad23-05c8-4e5d-966b-8864a94e89d6';
+      const id = '2494ad2305c84e5d966b8864a94e89d6';
       const ciphertext = signatureServer.generateBody({ id });
       const result = await instance.post('/json', { ciphertext });
       expect(result).toEqual(
@@ -114,6 +123,7 @@ describe('SignatureServer', () => {
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
           body: expect.objectContaining({ id, sub: 'request-token' }),
+          params: expect.objectContaining({ id, sub: 'request-token' }),
         }),
         expect.anything(),
         expect.anything(),
@@ -121,7 +131,7 @@ describe('SignatureServer', () => {
     });
 
     it('successfully use SDK', async () => {
-      const id = '2494ad23-05c8-4e5d-966b-8864a94e89d6';
+      const id = '2494ad2305c84e5d966b8864a94e89d6';
       const result = await sdk.post('/json', { id });
       expect(result).toEqual(
         expect.objectContaining({ status: 200, statusText: 'OK' }),
@@ -129,6 +139,7 @@ describe('SignatureServer', () => {
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
           body: expect.objectContaining({ id, sub: 'request-token' }),
+          params: expect.objectContaining({ id, sub: 'request-token' }),
         }),
         expect.anything(),
         expect.anything(),
@@ -142,7 +153,7 @@ describe('SignatureServer', () => {
     });
 
     it('successfully get formData', async () => {
-      const id = '2494ad23-05c8-4e5d-966b-8864a94e89d6';
+      const id = '2494ad2305c84e5d966b8864a94e89d6';
       const form = new FormData();
       form.append('ciphertext', signatureServer.generateBody({ id }));
       form.append('file', fs.createReadStream(`${__dirname}/sample.jpg`));
@@ -156,6 +167,7 @@ describe('SignatureServer', () => {
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
           body: expect.objectContaining({ id, sub: 'request-token' }),
+          params: expect.objectContaining({ id, sub: 'request-token' }),
         }),
         expect.anything(),
         expect.anything(),
@@ -169,6 +181,73 @@ describe('SignatureServer', () => {
       await expect(
         instance.post('/form', form, { headers: form.getHeaders() }),
       ).rejects.toEqual(new Error('Request failed with status code 400'));
+    });
+  });
+
+  describe('http methods', () => {
+    it('successfully get', async () => {
+      const id = '2494ad2305c84e5d966b8864a94e89d6';
+      await sdk.get('/get', { id });
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          body: expect.objectContaining({ id, sub: 'request-token' }),
+          params: expect.objectContaining({ id, sub: 'request-token' }),
+        }),
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
+    it('successfully delete', async () => {
+      const id = '2494ad2305c84e5d966b8864a94e89d6';
+      await sdk.delete('/delete', { id });
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          body: expect.objectContaining({ id, sub: 'request-token' }),
+          params: expect.objectContaining({ id, sub: 'request-token' }),
+        }),
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
+    it('successfully post', async () => {
+      const id = '2494ad2305c84e5d966b8864a94e89d6';
+      await sdk.post('/post', { id });
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          body: expect.objectContaining({ id, sub: 'request-token' }),
+          params: expect.objectContaining({ id, sub: 'request-token' }),
+        }),
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
+    it('successfully put', async () => {
+      const id = '2494ad2305c84e5d966b8864a94e89d6';
+      await sdk.put('/put', { id });
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          body: expect.objectContaining({ id, sub: 'request-token' }),
+          params: expect.objectContaining({ id, sub: 'request-token' }),
+        }),
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
+    it('successfully patch', async () => {
+      const id = '2494ad2305c84e5d966b8864a94e89d6';
+      await sdk.patch('/patch', { id });
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          body: expect.objectContaining({ id, sub: 'request-token' }),
+          params: expect.objectContaining({ id, sub: 'request-token' }),
+        }),
+        expect.anything(),
+        expect.anything(),
+      );
     });
   });
 });
