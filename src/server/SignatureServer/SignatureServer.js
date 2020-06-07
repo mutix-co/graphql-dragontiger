@@ -1,4 +1,3 @@
-const assign = require('lodash/assign');
 const defaults = require('lodash/defaults');
 const { JSONWebSignature: JWS, base16 } = require('jw25519');
 
@@ -33,8 +32,7 @@ SignatureServer.prototype = {
         const { url, params = {}, body = {} } = req;
         const ciphertext = params[field] || body[field] || url.substring(url.lastIndexOf('/') + 1);
         const payload = this.cryptor.verify(ciphertext, { sub });
-        req.params = assign(req.params, payload);
-        req.body = assign(req.body, payload);
+        req.signature = { ...payload, ciphertext };
         next();
       } catch (e) {
         res.status(400).send('invalid signature');

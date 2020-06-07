@@ -4,7 +4,7 @@ const gql = require('graphql-tag');
 const { ApolloServer, PubSub } = require('apollo-server-express');
 const { AuthenticationError, ForbiddenError } = require('apollo-server-errors');
 const formatError = require('../src/utils/formatError');
-const AuthorizationServer = require('../src/server/AuthorizationServer');
+const AuthenticationServer = require('../src/server/AuthenticationServer');
 
 module.exports = ({ app }) => {
   const pubsub = new PubSub();
@@ -160,7 +160,7 @@ module.exports = ({ app }) => {
   };
 
   const key = '61949dde6de8402e73f9a0251ca4542aba0e2c48b9297a9df61727ba892acddddc5f72b87838b88e834dedffc1977a74c42e59ccdfe4edd18026b7c5aa6972e1';
-  const authorization = new AuthorizationServer(key, {
+  const authorization = new AuthenticationServer(key, {
     signInHandler(params) {
       if (params.username === 'admin') {
         return { nickname: 'admin', isAdmin: true };

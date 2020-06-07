@@ -60,8 +60,7 @@ describe('SignatureServer', () => {
       );
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          body: expect.objectContaining({ id, sub: 'request-token' }),
-          params: expect.objectContaining({ id, sub: 'request-token' }),
+          signature: expect.objectContaining({ id, sub: 'request-token' }),
         }),
         expect.anything(),
         expect.anything(),
@@ -81,8 +80,7 @@ describe('SignatureServer', () => {
       );
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          body: expect.objectContaining({ id, sub: 'request-token' }),
-          params: expect.objectContaining({ id, sub: 'request-token' }),
+          signature: expect.objectContaining({ id, sub: 'request-token' }),
         }),
         expect.anything(),
         expect.anything(),
@@ -97,8 +95,7 @@ describe('SignatureServer', () => {
       );
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          body: expect.objectContaining({ id, sub: 'request-token' }),
-          params: expect.objectContaining({ id, sub: 'request-token' }),
+          signature: expect.objectContaining({ id, sub: 'request-token' }),
         }),
         expect.anything(),
         expect.anything(),
@@ -122,8 +119,7 @@ describe('SignatureServer', () => {
       );
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          body: expect.objectContaining({ id, sub: 'request-token' }),
-          params: expect.objectContaining({ id, sub: 'request-token' }),
+          signature: expect.objectContaining({ id, sub: 'request-token' }),
         }),
         expect.anything(),
         expect.anything(),
@@ -138,8 +134,7 @@ describe('SignatureServer', () => {
       );
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          body: expect.objectContaining({ id, sub: 'request-token' }),
-          params: expect.objectContaining({ id, sub: 'request-token' }),
+          signature: expect.objectContaining({ id, sub: 'request-token' }),
         }),
         expect.anything(),
         expect.anything(),
@@ -166,8 +161,7 @@ describe('SignatureServer', () => {
       );
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          body: expect.objectContaining({ id, sub: 'request-token' }),
-          params: expect.objectContaining({ id, sub: 'request-token' }),
+          signature: expect.objectContaining({ id, sub: 'request-token' }),
         }),
         expect.anything(),
         expect.anything(),
@@ -190,8 +184,7 @@ describe('SignatureServer', () => {
       await sdk.get('/get', { id });
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          body: expect.objectContaining({ id, sub: 'request-token' }),
-          params: expect.objectContaining({ id, sub: 'request-token' }),
+          signature: expect.objectContaining({ id, sub: 'request-token' }),
         }),
         expect.anything(),
         expect.anything(),
@@ -203,8 +196,7 @@ describe('SignatureServer', () => {
       await sdk.delete('/delete', { id });
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          body: expect.objectContaining({ id, sub: 'request-token' }),
-          params: expect.objectContaining({ id, sub: 'request-token' }),
+          signature: expect.objectContaining({ id, sub: 'request-token' }),
         }),
         expect.anything(),
         expect.anything(),
@@ -216,8 +208,7 @@ describe('SignatureServer', () => {
       await sdk.post('/post', { id });
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          body: expect.objectContaining({ id, sub: 'request-token' }),
-          params: expect.objectContaining({ id, sub: 'request-token' }),
+          signature: expect.objectContaining({ id, sub: 'request-token' }),
         }),
         expect.anything(),
         expect.anything(),
@@ -229,8 +220,7 @@ describe('SignatureServer', () => {
       await sdk.put('/put', { id });
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          body: expect.objectContaining({ id, sub: 'request-token' }),
-          params: expect.objectContaining({ id, sub: 'request-token' }),
+          signature: expect.objectContaining({ id, sub: 'request-token' }),
         }),
         expect.anything(),
         expect.anything(),
@@ -242,8 +232,7 @@ describe('SignatureServer', () => {
       await sdk.patch('/patch', { id });
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          body: expect.objectContaining({ id, sub: 'request-token' }),
-          params: expect.objectContaining({ id, sub: 'request-token' }),
+          signature: expect.objectContaining({ id, sub: 'request-token' }),
         }),
         expect.anything(),
         expect.anything(),

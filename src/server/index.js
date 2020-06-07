@@ -1,4 +1,4 @@
 exports.SecretServer = require('./SecretServer');
-exports.AuthorizationServer = require('./AuthorizationServer');
+exports.AuthenticationServer = require('./AuthenticationServer');
 exports.SignatureServer = require('./SignatureServer');
 exports.SignatureSDK = require('./SignatureSDK');
