@@ -1,6 +1,6 @@
 {
   "name": "@mutix/graphql-dragontiger",
-  "version": "0.1.17",
+  "version": "0.2.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -85,7 +85,7 @@
     "babel-plugin-istanbul": "^6.0.0",
     "cookie": "^0.4.1",
     "global": "^4.4.0",
-    "jw25519": "^1.2.2",
+    "jw25519": "^1.3.1",
     "lodash": "^4.17.15",
     "qrcode": "^1.4.4",
     "subscriptions-transport-ws": "^0.9.16"

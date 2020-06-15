@@ -34,9 +34,6 @@ const styleguide = styleguidist({
     name: 'utils',
     sectionDepth: 1,
     sections: [{
-      name: 'env',
-      content: `${root}/utils/env/env.md`,
-    }, {
       name: 'getFieldName',
       content: `${root}/utils/getFieldName/getFieldName.md`,
     }, {
@@ -55,8 +52,8 @@ const styleguide = styleguidist({
     name: 'server',
     sectionDepth: 1,
     sections: [{
-      name: 'AuthorizationServer',
-      content: `${root}/server/AuthorizationServer/AuthorizationServer.md`,
+      name: 'AuthenticationServer',
+      content: `${root}/server/AuthenticationServer/AuthenticationServer.md`,
     }, {
       name: 'SecretServer',
       content: `${root}/server/SecretServer/SecretServer.md`,

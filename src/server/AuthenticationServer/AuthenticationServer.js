@@ -3,11 +3,13 @@ const identity = require('lodash/identity');
 const includes = require('lodash/includes');
 const crypto = require('crypto');
 const cookie = require('cookie');
-const { JSONWebSignature: JWS, base16 } = require('jw25519');
+const { JSONWebSignature: JWS, codec } = require('jw25519');
 const { AuthenticationError } = require('apollo-server-errors');
 
+const { decode16 } = codec;
+
 function AuthenticationServer(secretKey, options) {
-  this.cryptor = new JWS(base16.decode(secretKey));
+  this.cryptor = new JWS(decode16(secretKey));
 
   assign(
     this,

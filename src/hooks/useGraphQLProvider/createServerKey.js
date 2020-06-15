@@ -1,7 +1,7 @@
-import { JSONWebSecretBox, Base, Text } from 'jw25519';
+import { JSONWebSecretBox, codec, Text } from 'jw25519';
 import debounce from '../../utils/debounce';
 
-const { base58 } = Base;
+const { encode32, decode32 } = codec;
 
 export default function createServerKey(client) {
   const { configs, cache, fetch } = client;
@@ -12,12 +12,12 @@ export default function createServerKey(client) {
       return {
         encrypt(data) {
           const value = Text.convertStringToUnicode(JSON.stringify(data || {}));
-          const clientKey = base58.encode(jwsb.keyPair.publicKey);
+          const clientKey = encode32(jwsb.keyPair.publicKey);
           const ciphertext = jwsb.encrypt(value, new Uint8Array(serverKey));
           return { keyId, clientKey, ciphertext };
         },
         decrypt(ciphertext, publicKey) {
-          const value = jwsb.decrypt(ciphertext, base58.decode(publicKey));
+          const value = jwsb.decrypt(ciphertext, decode32(publicKey));
           return JSON.parse(Text.convertUnicodeToString(value));
         },
       };
@@ -28,7 +28,7 @@ export default function createServerKey(client) {
     async renew() {
       const { data } = await fetch({ url: configs.certificate });
       const { keyId, serverKey, expireAt } = data;
-      this.setServerKey(keyId, [...base58.decode(serverKey)], new Date(expireAt).getTime());
+      this.setServerKey(keyId, [...decode32(serverKey)], new Date(expireAt).getTime());
     },
     check: debounce(async () => {
       if (cache.expired('server-key') === true) await self.renew();

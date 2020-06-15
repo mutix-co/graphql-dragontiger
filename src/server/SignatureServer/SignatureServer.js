@@ -1,8 +1,10 @@
 const defaults = require('lodash/defaults');
-const { JSONWebSignature: JWS, base16 } = require('jw25519');
+const { JSONWebSignature: JWS, codec } = require('jw25519');
+
+const { decode16 } = codec;
 
 function SignatureServer(secretKey) {
-  this.cryptor = new JWS(base16.decode(secretKey));
+  this.cryptor = new JWS(decode16(secretKey));
 }
 
 SignatureServer.prototype = {

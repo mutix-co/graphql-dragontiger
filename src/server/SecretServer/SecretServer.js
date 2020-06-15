@@ -1,5 +1,6 @@
-const { JSONWebSecretBox, Base: { base58 }, Text } = require('jw25519');
+const { JSONWebSecretBox, codec, Text } = require('jw25519');
 
+const { encode32, decode32 } = codec;
 function SecretServer(generator = () => ({})) {
   this.keys = new Map();
   this.generator = generator;
@@ -30,7 +31,7 @@ SecretServer.prototype = {
         const { keyId, cryptor, expireAt } = await this.getKey();
         res.send({
           keyId,
-          serverKey: base58.encode(cryptor.keyPair.publicKey),
+          serverKey: encode32(cryptor.keyPair.publicKey),
           expireAt: new Date(expireAt).toISOString(),
         });
       } catch (error) {
@@ -49,7 +50,7 @@ SecretServer.prototype = {
         }
 
         const key = await this.getKey(body.keyId);
-        const clientKey = base58.decode(body.clientKey);
+        const clientKey = decode32(body.clientKey);
 
         const tmp = key.cryptor.decrypt(body.ciphertext, clientKey);
         req.body = JSON.parse(Text.convertUnicodeToString(tmp));
@@ -63,7 +64,7 @@ SecretServer.prototype = {
             const ciphertext = jwsb.encrypt(value, clientKey);
             res.set('Content-Type', 'application/json');
             return originalSend.call(res, JSON.stringify({
-              ciphertext, serverKey: base58.encode(jwsb.keyPair.publicKey),
+              ciphertext, serverKey: encode32(jwsb.keyPair.publicKey),
             }));
           }
           return originalSend.call(res, data);
