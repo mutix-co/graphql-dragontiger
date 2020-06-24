@@ -36,6 +36,7 @@ export default function createAuthenticator(client) {
       const result = await fetch({
         method: 'POST', url: configs.authorization, action: 'signIn', ...params,
       });
+      configs.userHander(result);
       return result;
     },
     async signOut(params) {
@@ -46,6 +47,7 @@ export default function createAuthenticator(client) {
         });
         return result;
       } finally {
+        configs.userHander(null);
         self.setAccess('');
         self.setRefresh('');
       }
@@ -61,9 +63,11 @@ export default function createAuthenticator(client) {
         });
         self.setAccess(result.accessToken);
         self.setRefresh(result.refreshToken);
+        configs.userHander(result);
         return result;
       } catch (error) {
         if (NetworkError.isForbidden(error)) {
+          configs.userHander(null);
           self.setAccess('');
           self.setRefresh('');
         }
@@ -74,6 +78,9 @@ export default function createAuthenticator(client) {
       if (self.getAccess() === '' && self.getRefresh() !== '') await self.renew();
     }),
   };
+
+  if (self.getRefresh() !== '') self.renew();
+  else configs.userHander(null);
 
   return self;
 }

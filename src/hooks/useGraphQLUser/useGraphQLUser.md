@@ -1,5 +1,5 @@
 ```js
-import { useCallback } from 'react';
+import { useCallback, Suspense } from 'react';
 import useGraphQLUser from './useGraphQLUser';
 
 function User() {
@@ -17,5 +17,7 @@ function User() {
   )
 }
 
-<User />
+<Suspense fallback="waiting...">
+  <User />
+</Suspense>
 ```
