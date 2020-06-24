@@ -1,4 +1,4 @@
-import React, {
+import {
   useEffect, useCallback, useState, useMemo,
 } from 'react';
 import getFieldName from '../../utils/getFieldName';
@@ -66,7 +66,4 @@ export default function usePagination(tag, ...args) {
     hasNext: next !== undefined,
   };
   return [data, actions];
-
-  // eslint-disable-next-line no-unreachable
-  return <div />;
 }

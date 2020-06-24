@@ -1,7 +1,7 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable react/no-unused-prop-types */
 
-import React, {
+import {
   useEffect, useCallback, useReducer, useMemo,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -44,9 +44,6 @@ export default function useQuery(tag, ...args) {
 
   const field = getFieldName(tag);
   return [result[field], { error: null, refresh, suspense: null }];
-
-  // eslint-disable-next-line no-unreachable
-  return <div />;
 }
 
 useQuery.propTypes = {

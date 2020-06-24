@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import defaults from 'lodash/defaults';
 import isEqual from 'lodash/isEqual';
 
@@ -9,7 +9,4 @@ export default function useDefaults(...args) {
     ref.current.value = defaults({}, ...args);
   }
   return ref.current.value;
-
-  // eslint-disable-next-line no-unreachable
-  return <div />;
 }

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import identity from 'lodash/identity';
 import useDefaults from '../useDefaults';
 import createClient from './createClient';
@@ -16,7 +16,4 @@ export default function useGraphQLProvider(options) {
   const client = useMemo(() => createClient(configs), [configs]);
 
   return [client, user];
-
-  // eslint-disable-next-line no-unreachable
-  return <div />;
 }

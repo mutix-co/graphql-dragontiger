@@ -1,7 +1,7 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable react/no-unused-prop-types */
 
-import React, {
+import {
   useEffect, useCallback, useMemo, useReducer,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -50,9 +50,6 @@ export default function useNode(id, ...args) {
 
   const node = client.cache.get(nodeId);
   return [node, { error: null, refresh, suspense: null }];
-
-  // eslint-disable-next-line no-unreachable
-  return <div />;
 }
 
 useNode.propTypes = {
