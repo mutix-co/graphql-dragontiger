@@ -7,7 +7,7 @@ function Sample() {
 ```
 
 ```jsx
-import React, { Suspense } from 'react';
+import React from 'react';
 import gql from 'graphql-tag';
 import { QueryBoundary } from '../../client';
 import useQuery from "./";
@@ -17,7 +17,7 @@ const QUERY_TAGS = gql`query { tags { id value } }`;
 function Component() {
   const [data, { suspense }] = useQuery(QUERY_TAGS);
 
-  if (suspense) throw suspense;
+  if (suspense !== null) throw suspense;
 
   return (
     <>
@@ -26,7 +26,7 @@ function Component() {
   );
 }
 
-<Suspense>
+<QueryBoundary>
   <Component />
-</Suspense>
+</QueryBoundary>
 ```

@@ -7,6 +7,7 @@ export default class QueryBoundary extends React.Component {
   constructor(props) {
     super(props);
     this.state = { error: null };
+    this.onRetry = () => this.setState({ error: null });
   }
 
   static getDerivedStateFromError(error) {
@@ -18,28 +19,32 @@ export default class QueryBoundary extends React.Component {
     return false;
   }
 
-  onRetry() {
-    this.setState({ error: null });
-  }
-
   render() {
-    const { children, fallback: Fallback, errorback: ErrorBack } = this.props;
+    const {
+      className,
+      fallback: Fallback,
+      errorback: ErrorBack,
+      children,
+    } = this.props;
     const { error } = this.state;
 
-    // eslint-disable-next-line react/jsx-no-bind
-    if (error !== null) return <ErrorBack error={error} onRetry={this.onRetry.bind(this)} />;
+    if (error !== null) {
+      return <ErrorBack className={className} error={error} onRetry={this.onRetry} />;
+    }
 
-    return <Suspense fallback={<Fallback />}>{children}</Suspense>;
+    return <Suspense fallback={<Fallback className={className} />}>{children}</Suspense>;
   }
 }
 
 QueryBoundary.propTypes = {
+  className: PropTypes.string,
   fallback: PropTypes.func,
   errorback: PropTypes.func,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]).isRequired,
 };
 
 QueryBoundary.defaultProps = {
+  className: '',
   fallback: QuerySpinner,
   errorback: QueryError,
 };

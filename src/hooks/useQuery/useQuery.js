@@ -27,8 +27,6 @@ export default function useQuery(tag, ...args) {
     [client, tag, variables, hash, params],
   );
 
-  if (client.cache.has(hash) === false) throw refresh();
-
   useEffect(() => {
     if (client.cache.expired(hash)) refresh();
   }, [client, hash, refresh]);
