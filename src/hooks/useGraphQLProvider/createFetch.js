@@ -10,7 +10,7 @@ export default function createFetch(client) {
       return await request(params);
     } catch (error) {
       if (error.response !== undefined) {
-        throw new NetworkError(error.response);
+        throw error;
       } else if (error.message === 'Network Error') {
         throw new NetworkError();
       }

@@ -1,4 +1,5 @@
 import assign from 'lodash/assign';
+import cloneDeep from 'lodash/cloneDeep';
 
 function isNull(value) {
   return value === undefined || value === null;
@@ -50,7 +51,7 @@ export default function createCache(client) {
     },
     merge(name, value) {
       const tmp = this.get(name) || {};
-      assign(tmp, value);
+      assign(tmp, cloneDeep(value));
       this.set(name, tmp);
       return tmp;
     },

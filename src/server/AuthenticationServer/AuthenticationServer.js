@@ -59,7 +59,7 @@ AuthenticationServer.prototype = {
     const { correlationId } = params;
     const refreshToken = this.signRefresh({ ...passport, correlationId });
     const accessToken = this.signAccess({ ...passport, correlationId });
-    return { ...passport, refreshToken, accessToken };
+    return { refreshToken, accessToken };
   },
   async signOut(params) {
     const passport = await this.signOutHandler(params);
@@ -77,7 +77,7 @@ AuthenticationServer.prototype = {
     const passport = await this.renewHandler({ ...params, ...signature });
     const refreshToken = this.signRefresh({ ...passport, correlationId });
     const accessToken = this.signAccess({ ...passport, correlationId });
-    return { ...passport, refreshToken, accessToken };
+    return { refreshToken, accessToken };
   },
   express() {
     return async (req, res) => {
@@ -101,7 +101,7 @@ AuthenticationServer.prototype = {
       };
 
       try {
-        const result = await this[action]({ ...req.body, headers });
+        const result = await this[action]({ ...req.body, ...headers });
         const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
         res.cookie('x-correlation-id', correlationId, { expires, httpOnly: true });
         res.json({ ...result, status: 'ok', correlationId }).end();
