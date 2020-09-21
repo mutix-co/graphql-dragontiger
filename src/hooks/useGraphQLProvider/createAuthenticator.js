@@ -34,7 +34,7 @@ export default function createAuthenticator(client) {
     async signIn(params) {
       await serverKey.check();
       const result = await fetch({
-        method: 'POST', url: configs.authorization, action: 'signIn', ...params,
+        method: 'POST', url: configs.authorization, data: { action: 'signIn', ...params },
       });
       configs.userHander(result);
       return result;
@@ -43,7 +43,7 @@ export default function createAuthenticator(client) {
       try {
         await serverKey.check();
         const result = await fetch({
-          method: 'POST', url: configs.authorization, action: 'signOut', ...params,
+          method: 'POST', url: configs.authorization, data: { action: 'signOut', ...params },
         });
         return result;
       } finally {
@@ -59,7 +59,7 @@ export default function createAuthenticator(client) {
       await serverKey.check();
       try {
         const result = await fetch({
-          method: 'POST', url: configs.authorization, action: 'renew', refreshToken: refresh, ...params,
+          method: 'POST', url: configs.authorization, data: { action: 'renew', refreshToken: refresh, ...params },
         });
         self.setAccess(result.accessToken);
         self.setRefresh(result.refreshToken);

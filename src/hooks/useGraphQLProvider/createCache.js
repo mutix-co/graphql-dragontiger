@@ -50,8 +50,7 @@ export default function createCache(client) {
     },
     merge(name, value) {
       const tmp = this.get(name) || {};
-      assign(tmp, value);
-      this.set(name, tmp);
+      this.set(name, { ...tmp, ...value });
       return tmp;
     },
     expired(name) {
