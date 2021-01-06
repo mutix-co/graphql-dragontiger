@@ -80,7 +80,7 @@
     "@cypress/code-coverage": "^3.7.4",
     "apollo-server-errors": "^2.4.1",
     "apollo-server-express": "^2.12.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "babel-jest": "^26.0.1",
     "babel-plugin-istanbul": "^6.0.0",
     "cookie": "^0.4.1",
